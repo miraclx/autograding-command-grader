@@ -41,7 +41,7 @@ function getErrorMessageAndStatus(error, command) {
     return { status: 'error', errorMessage: `Unable to locate executable file: ${command}` }
   }
   if (error.message.includes('Command failed')) {
-    return { status: 'fail', errorMessage: 'failed with exit code 1' }
+    return { status: 'fail', errorMessage: `failed with exit code \`${error.status}\`\n\n-- STDOUT --\n${error.stdout.toString()}\n\n-- STDERR --\n${error.stderr.toString()}` }
   }
   return  { status: 'error', errorMessage: error.message }
 }
@@ -60,7 +60,7 @@ function run() {
 
   try {
     if (setupCommand) {
-      execSync(setupCommand, {timeout})
+      execSync(setupCommand, {timeout, stdio: 'inherit'})
     }
 
     startTime = new Date()
